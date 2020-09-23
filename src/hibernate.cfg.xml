@@ -16,6 +16,11 @@
 		
 		<mapping class="joyou.Members.model.MembersBean"/>
 		<mapping class="joyou.Products.model.ProductsBean"/>
+		<mapping class="joyou.Orders.model.OrdersBean"/>
+		<mapping class="joyou.Orders.model.OrderItemBean"/>
+		<mapping class="joyou.GameTypes.model.GameTypesBean"/>
+		<mapping class="joyou.Discounts.model.DiscountsBean"/>
+		<mapping class="joyou.friends.model.FriendsBean"/>
 
 		
     </session-factory>

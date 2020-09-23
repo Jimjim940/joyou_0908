@@ -16,6 +16,7 @@ import joyou.Products.dao.ProductsDao;
 import joyou.Products.model.ProductsBean;
 import joyou.util.HibernateUtil;
 
+//進入購物頁面準備商品資料
 @WebServlet("/ProductsGetServlet.do")
 @javax.servlet.annotation.MultipartConfig
 public class ProductsGetServlet extends HttpServlet {
@@ -31,6 +32,7 @@ public class ProductsGetServlet extends HttpServlet {
 		session.beginTransaction();
 		
 		
+		try {
 		String pageStr = request.getParameter("pageNo");
 		if(pageStr==null) {
 			pageNo=1;
@@ -39,39 +41,24 @@ public class ProductsGetServlet extends HttpServlet {
 		}
 		
 		ProductsDao pDao = new ProductsDao(session);
-		List<ProductsBean> pageBean = pDao.selectByPage(pageNo);
+		List<ProductsBean> pageBean = pDao.selectByPage(pageNo); 
+		
 		int totalNo = pDao.getTotalPages();
-		request.setAttribute("products_DPP", pageBean);
+		request.setAttribute("products_DPP", pageBean);    
 		request.setAttribute("pageNo", pageNo);
 		request.setAttribute("totalPages", totalNo);
-		session.getTransaction().commit();
-		request.getRequestDispatcher("ProductsMaintainPage.jsp").forward(request, response);
+		request.getRequestDispatcher("ShoppingPage.jsp").forward(request, response);
+		}catch(Exception e) {
+			e.printStackTrace();
+			session.getTransaction().rollback();
+		}finally {
+			session.getTransaction().commit();
+		}
 	}
 
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
-		response.setContentType("text/html; charset=UTF-8");
-		SessionFactory factory = HibernateUtil.getSessionFactory();
-		Session session = factory.getCurrentSession();
-		session.beginTransaction();
-		
-		
-		String pageStr = request.getParameter("pageNo");
-		if(pageStr==null) {
-			pageNo=1;
-		}else {
-			pageNo = Integer.parseInt(pageStr.trim());
-		}
-		
-		ProductsDao pDao = new ProductsDao(session);
-		List<ProductsBean> pageBean = pDao.selectByPage(pageNo);
-		int totalNo = pDao.getTotalPages();
-		request.setAttribute("products_DPP", pageBean);
-		request.setAttribute("pageNo", pageNo);
-		request.setAttribute("totalPages", totalNo);
-		session.getTransaction().commit();
-		request.getRequestDispatcher("ProductsMaintainPage.jsp").forward(request, response);
+		doGet(request,response);
 	}
 
 }

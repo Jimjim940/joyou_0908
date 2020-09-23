@@ -16,11 +16,9 @@ import joyou.util.HibernateUtil;
 @javax.servlet.annotation.MultipartConfig
 public class ProductsDeleteServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doPost(request,response);
 	}
-
-
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
@@ -28,10 +26,11 @@ public class ProductsDeleteServlet extends HttpServlet {
 		Session session = factory.getCurrentSession();
 		session.beginTransaction();
 		
-		String strId = request.getParameter("productsId");	
+		String strId = request.getParameter("productId");	
 		int pId = Integer.parseInt(strId);
 		
-		ProductsDao pDao = new ProductsDao();
+		
+		ProductsDao pDao = new ProductsDao(session);
 		boolean result = pDao.delete(pId);
 		
 		if(result) {
@@ -39,6 +38,9 @@ public class ProductsDeleteServlet extends HttpServlet {
 		}else {
 			request.setAttribute("DeleteMsg", "Delete UnSuccess!");
 		}
+        session.getTransaction().commit();
+        
+        
 	}
 
 }

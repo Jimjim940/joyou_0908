@@ -13,45 +13,40 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 import com.google.gson.Gson;
 
-import joyou.Members.model.MembersBeanDao;
+import joyou.Members.model.MembersBeanService;
 import joyou.util.HibernateUtil;
 
 @WebServlet("/CheckDuplicateAccountServlet")
 public class CheckDuplicateAccountServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private Session session;
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
 		request.setCharacterEncoding("UTF-8");
 		String memberAccount = request.getParameter("account");
+
 		response.setContentType("application/json; charset=UTF-8");
 		PrintWriter out = response.getWriter();
-		// String id = "";
+
 		Gson gson = new Gson();
 		Map<String, String> map = new HashMap<>();
-		if (memberAccount != null && memberAccount.trim().length() != 0) {
-			try {
-				// MemberService service = new MemberServiceImpl();
-				// id = service.checkMemberId(memberId);
-				// map.put("id", id);
-				SessionFactory factory = HibernateUtil.getSessionFactory();
 
-				session = factory.openSession();
-				session.beginTransaction();
+		if (memberAccount != null && memberAccount.length() != 0) {
 
-				MembersBeanDao md1 = new MembersBeanDao(session);
-				Boolean result1 = new Boolean(md1.checkDuplicateAccount(memberAccount));
-				map.put("memberAccountisDuplicate", result1.toString());
+			SessionFactory factory = HibernateUtil.getSessionFactory();
+			Session session = factory.getCurrentSession();
+			Transaction tx = session.beginTransaction();
 
-				session.getTransaction().commit();
-				session.close();
+			MembersBeanService mService = new MembersBeanService(session);
+			boolean result1 = mService.checkMemberExistByAccount(memberAccount);
+			map.put("memberAccountisDuplicate", Boolean.toString(result1));
 
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
+			tx.commit();
+
 		}
 		out.println(gson.toJson(map));
 		out.close();

@@ -1,4 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
+
+
+
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
@@ -26,7 +29,7 @@ margin:0px auto;
 <table border='2' width="690" >
 		<tr height='60'>
 			<td rowspan="2" height='120' width='80'>
-			<img src="${pageContext.servletContext.contextPath}/showImgServlet.do?id=${ProductBean.productId}&type=Product">
+			<img src="http://localhost:8080/JoYouProject/showImgServlet.do?id=${ProductBean.productId}&type=Product">
 			</td>
 			<td colspan="3"width='500' align="left">商品名稱：<a href="BookPreUpdate.do?BOOKID=${ProductBean.productName}&pageNo=${pageNo}">${ProductBean.productName}</a>
 		</tr>
